@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:echat/app/constants/constants.dart';
 import 'package:echat/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference _userCollectionRef =
       FirebaseFirestore.instance.collection('users');
+      
   UserModel? _currentUser;
   UserModel get currentUser => _currentUser!;
 
@@ -51,6 +54,7 @@ class AuthController extends GetxController {
               passwordController.clear();
               confirmPasswordController.clear();
             });
+            Get.toNamed('/login');
           } 
           //firestore exception
           on Exception catch (e) {
@@ -91,8 +95,13 @@ class AuthController extends GetxController {
         try {
        DocumentSnapshot userData = await _userCollectionRef.doc(userCredential.user!.uid).get();
       _currentUser = UserModel(id: userData.get('id'), email: userData.get('email'), name: userData.get('name'));
-
+      Constants.prefs!.setString('uid' , userData.get('id'));
+      Constants.prefs!.setString('name' , userData.get('name'));
+      Constants.prefs!.setString('email' , userData.get('email'));
+      Constants.prefs!.setBool('loggedin' , true);
        print(currentUser.name);
+
+
        Get.offNamed('/', arguments: currentUser);
     } on Exception catch (e) {
       print(e);
@@ -109,6 +118,17 @@ class AuthController extends GetxController {
       }
     }
 
+
+  }
+
+  Future logOutUser()async{
+    await _auth.signOut();
+    Constants.prefs!.remove('uid');
+    Constants.prefs!.remove('name');
+    Constants.prefs!.remove('email');
+    Constants.prefs!.remove('loggedin');
+
+    Get.offAllNamed("/login");
 
   }
 }

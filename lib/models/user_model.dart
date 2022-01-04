@@ -13,6 +13,15 @@ class UserModel{
 
     return UserModel(id: id, email: email, name: name);
   }
+
+  static UserModel fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      id: map['id'],
+      name: map['name'],
+      email: map['email'],
+    );
+  }
+
   Map<String, dynamic> toJson(){
     return {
       'id' : id, 
@@ -20,4 +29,6 @@ class UserModel{
       'email' : email
     };
   }
+
+
 }

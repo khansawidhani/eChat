@@ -1,13 +1,16 @@
+import 'package:echat/app/constants/constants.dart';
 import 'package:echat/binding/binding.dart';
+import 'package:echat/binding/home_binding.dart';
 import 'package:echat/ui/modules/auth/login.dart';
 import 'package:echat/ui/modules/auth/signup.dart';
+import 'package:echat/ui/modules/chat/chat.dart';
 import 'package:echat/ui/modules/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
-
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +18,7 @@ Future<void> main() async{
     options: DefaultFirebaseOptions.currentPlatform,
   );
   Binding().dependencies();
+  Constants.prefs = await SharedPreferences.getInstance();
   runApp(const Echat());
 }
 class Echat extends StatelessWidget {
@@ -22,6 +26,8 @@ class Echat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isUser = Constants.prefs!.getBool('loggedin') ?? false;
+    print(isUser);
     return GetMaterialApp(
       debugShowCheckedModeBanner: false, 
       theme: ThemeData(
@@ -31,12 +37,14 @@ class Echat extends StatelessWidget {
         )
       ),
       title: 'eChat-app',
-      initialRoute: '/login',
+      initialRoute: isUser ? '/' : '/login',
       getPages: [
         
-        GetPage(name: '/', page: ()=> Home()), 
+        GetPage(name: '/', page: ()=> Home(), binding: HomeBinding() ), 
         GetPage(name: '/signup', page: ()=> SignUp()), 
         GetPage(name: '/login', page: ()=> Login()), 
+        GetPage(name: '/chat', page: ()=> Chat()), 
+
 
 
 
