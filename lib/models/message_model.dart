@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class MessageModel {
   String recieverId;
   String senderId;
@@ -37,14 +35,14 @@ class MessageModel {
     return MessageModel(
         recieverId: map["recieverId"],
         senderId: map['senderId'],
-        senderName: map['senderName'],
+        senderName: map['senderName'], 
         recieverName: map["recieverName"],
         message: map['message'],
         createdAt: map['createdAt']);
   }
   Map<String, dynamic> toJson() {
     return {
-      'receieverId' : recieverId, 
+      'recieverId' : recieverId, 
       'senderId' : senderId, 
       'recieverName' : recieverName, 
       'senderName' : senderName, 
