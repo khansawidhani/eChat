@@ -1,29 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:echat/app/constants/constants.dart';
 import 'package:echat/models/user_model.dart';
-import 'package:echat/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController{
-  // FirebaseService? service;
-  final _auth = FirebaseAuth.instance;
+  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   final CollectionReference _userCollectionRef =
       FirebaseFirestore.instance.collection('users');
-
-  String currentUserId = Constants.prefs!.getString('uid').toString();
   RxList<UserModel>? users;
   RxBool isLoading = false.obs;
   @override
   void onInit(){
     super.onInit();
-    // service = Get.put(FirebaseService());
     getAllUserOnce();
   }
 
     Future<List<UserModel>> getAllUserOnce() async {
     try{
-      String id = _auth.currentUser!.uid;
+      String id = currentUserId;
     showLoading();
     var snapshots = await _userCollectionRef.get();
     hideLoading();
@@ -42,8 +36,7 @@ class HomeController extends GetxController{
       throw Exception();
     }
     }on Exception catch(e){
-      print(e);
-      throw Exception();
+      throw Exception(e);
     }
   }
   showLoading(){

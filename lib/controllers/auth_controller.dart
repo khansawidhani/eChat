@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:echat/app/constants/constants.dart';
+import 'package:echat/constants/constants.dart';
 import 'package:echat/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -14,16 +13,6 @@ class AuthController extends GetxController {
       
   UserModel? _currentUser;
   UserModel get currentUser => _currentUser!;
-
-  //////
-  Future getUser(String uid) async {
-    
-  }
-
-  /////////
-  Future populateCurrentUser(User user) async {
-    _currentUser = await getUser(user.uid);
-  }
   ////////////// SIGNUP USER
 
   Future signupUserWithEmail(TextEditingController nameController,
@@ -48,7 +37,6 @@ class AuthController extends GetxController {
                 .doc(_currentUser!.id)
                 .set(_currentUser!.toJson())
                 .then((value) {
-              print('User added');
               nameController.clear();
               emailController.clear();
               passwordController.clear();
@@ -61,7 +49,7 @@ class AuthController extends GetxController {
             if (e is PlatformException) {
               return e.message;
             } else {
-              print(e.toString());
+              throw Exception(e);
             }
           }
         }
@@ -99,12 +87,11 @@ class AuthController extends GetxController {
       Constants.prefs!.setString('name' , userData.get('name'));
       Constants.prefs!.setString('email' , userData.get('email'));
       Constants.prefs!.setBool('loggedin' , true);
-       print(currentUser.name);
 
 
        Get.offNamed('/', arguments: currentUser);
     } on Exception catch (e) {
-      print(e);
+      throw Exception(e);
     }
 
       }
