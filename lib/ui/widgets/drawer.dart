@@ -1,4 +1,4 @@
-import 'package:echat/app/constants/constants.dart';
+import 'package:echat/constants/constants.dart';
 import 'package:echat/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
@@ -35,12 +35,12 @@ class SidePanel extends StatelessWidget {
             padding: const EdgeInsets.all(0),
           ),
         ListTile(
-          leading: Icon(Icons.group, color: Colors.black87,),
+          leading: const Icon(Icons.group, color: Colors.black87,),
           title: Text('Friends', style: Theme.of(context).textTheme.subtitle1!.copyWith(fontWeight: FontWeight.bold, color: Colors.black87),),
 
         ),
         ListTile(
-          leading: Icon(Icons.settings, color: Colors.black87,),
+          leading: const Icon(Icons.settings, color: Colors.black87,),
           title: Text('Setting', style: Theme.of(context).textTheme.subtitle1!.copyWith(fontWeight: FontWeight.bold, color: Colors.black87),),
 
         ),
