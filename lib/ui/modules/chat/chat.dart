@@ -48,6 +48,7 @@ class Chat extends StatelessWidget {
                                   itemBuilder: (context, index) {
                                     MessageModel currentMessage = chatController.messages![index];
                                     String message = currentMessage.message;
+                                    print(message);
                                     bool sent = currentMessage.senderId != friend.id;
                                     bool isSender = currentMessage.senderId == chatController.currentUserId; 
                                     return buildMessageBubble(message, isSender, sent);
