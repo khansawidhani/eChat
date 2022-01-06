@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:echat/models/message_model.dart';
 import 'package:echat/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -7,35 +10,45 @@ class HomeController extends GetxController{
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   final CollectionReference _userCollectionRef =
       FirebaseFirestore.instance.collection('users');
-  RxList<UserModel>? users;
+  StreamController<List<UserModel>> userStream =
+      StreamController<List<UserModel>>.broadcast();
+  List<UserModel>? users;
   RxBool isLoading = false.obs;
   @override
   void onInit(){
     super.onInit();
-    getAllUserOnce();
+    getAllUsers();
   }
 
-    Future<List<UserModel>> getAllUserOnce() async {
+    getAllUsers(){
     try{
-      String id = currentUserId;
+      // String id = currentUserId;
     showLoading();
-    var snapshots = await _userCollectionRef.get();
-    hideLoading();
-    if (snapshots.docs.isNotEmpty) {
-      List<UserModel> usersList = snapshots.docs
-          .map((user) => UserModel(
-              id: user.get('id'),
-              email: user.get('email'),
-              name: user.get('name')))
-          .where((user) => user.id != id)
+    var querySnapshots = _userCollectionRef.snapshots();
+    print("QuerySnapshots $querySnapshots");
+    // listen to firestore users in realtime
+    querySnapshots.listen((QuerySnapshot snapshot){
+      print(snapshot.docs);
+       if(snapshot.docs.isNotEmpty){
+         print('snapshot.docs is not empty');
+      var userDocs = snapshot.docs
+          .map((DocumentSnapshot document) =>
+              UserModel.fromMap(document.data()! as Map<String, dynamic>))
+              .where((element) => element.id != currentUserId)
           .toList();
-          users = usersList.obs;
-          return users!;
+          // adding users to stream
+          userStream.add(userDocs);
+          print('Users added to stream');
+          users = userDocs;
+          update();
+          // hide loader
     }
-    else{
-      throw Exception();
+
     }
-    }on Exception catch(e){
+    );
+    
+    }
+    on Exception catch(e){
       throw Exception(e);
     }
   }
