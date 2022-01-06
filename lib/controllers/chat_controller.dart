@@ -45,8 +45,9 @@ class ChatController extends GetxController {
 
   void requestMessage(String friendId, String currentUserId) {
     var messageQuerySnapshot = _messagesCollectionRef
-        .orderBy('createdAt', descending: true)
-        .snapshots();
+    .orderBy('createdAt', descending: true) 
+        .snapshots(includeMetadataChanges: true);
+        
     messageQuerySnapshot.listen((QuerySnapshot snapshot){
       if(snapshot.docs.isNotEmpty){
       var msgs = snapshot.docs
@@ -85,7 +86,7 @@ class ChatController extends GetxController {
       message: messageBody.text,
       senderId: currentUserId,
       senderName: Constants.prefs!.getString('name').toString(),
-      createdAt: DateTime.now().millisecondsSinceEpoch,
+      createdAt: FieldValue.serverTimestamp()
     );
 
     try {
