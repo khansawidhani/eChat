@@ -17,11 +17,10 @@ class Home extends StatelessWidget {
           backgroundColor: Colors.deepPurple[100],
         ),
         body: SafeArea(
-            child: Obx((){
-              return homeController.isLoading.isTrue ?
-               const Center(child: CircularProgressIndicator(),)
-               : ListView.separated(
-              
+            child: GetBuilder<HomeController>(
+              builder: (controller)=>
+                controller.users != null ?
+ListView.separated(
               itemBuilder: (context, index){
                 return ListTile(
                   leading: CircleAvatar(child: Text(homeController.users![index].name[0]),),
@@ -38,10 +37,41 @@ class Home extends StatelessWidget {
                 return Divider(color: Colors.grey.shade300, height: 2.0,);
                 },
               itemCount: homeController.users!.length
-              );
+              ) 
+              : Center(child: CircularProgressIndicator(),)
+               ,
 
-            })
+            )
             
             ));
   }
 }
+
+
+// Obx((){
+//               return homeController.isLoading.isTrue ?
+//                const Center(child: CircularProgressIndicator(),)
+//                : homeController.users != null ?
+               
+              //  ListView.separated(
+              // itemBuilder: (context, index){
+              //   return ListTile(
+              //     leading: CircleAvatar(child: Text(homeController.users![index].name[0]),),
+              //     title: Text(homeController.users![index].name.toString()),
+              //     trailing: IconButton(icon: const Icon(Icons.arrow_back_ios_new_outlined, size: 17,), onPressed: (){
+              //       Get.toNamed('/chat', arguments: homeController.users![index]);
+              //     },),
+              //     onTap: (){
+              //       Get.toNamed('/chat', arguments: homeController.users![index]);
+              //     },
+              //   );
+              // },
+              // separatorBuilder: (context, index){
+              //   return Divider(color: Colors.grey.shade300, height: 2.0,);
+              //   },
+              // itemCount: homeController.users!.length
+              // ): 
+//               Center(child: Text('No user found', style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.grey)),)
+//               ;
+
+//             })
