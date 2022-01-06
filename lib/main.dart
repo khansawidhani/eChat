@@ -35,7 +35,7 @@ class Echat extends StatelessWidget {
       title: 'eChat',
       initialRoute: isUser ? '/' : '/login',
       getPages: [
-        GetPage(name: '/', page: () => Home(), binding: HomeBinding()),
+        GetPage(name: '/', page: () => Home()),
         GetPage(name: '/signup', page: () => SignUp()),
         GetPage(name: '/login', page: () => Login()),
         GetPage(name: '/chat', page: () => Chat(), binding: ChatBinding()),
